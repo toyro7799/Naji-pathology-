@@ -1,0 +1,2100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pathology Quiz - Advanced Learning Platform</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #3b82f6;
+            --primary-dark: #2563eb;
+            --primary-light: #60a5fa;
+            --secondary: #8b5cf6;
+            --accent: #ec4899;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --info: #06b6d4;
+            --dark: #1e293b;
+            --light: #f8fafc;
+            --white: #ffffff;
+            --gray: #64748b;
+            --border: #e2e8f0;
+            --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        [data-theme="dark"] {
+            --primary: #60a5fa;
+            --primary-dark: #3b82f6;
+            --primary-light: #93c5fd;
+            --secondary: #a78bfa;
+            --accent: #f472b6;
+            --success: #34d399;
+            --danger: #f87171;
+            --warning: #fbbf24;
+            --info: #22d3ee;
+            --dark: #0f172a;
+            --light: #1e293b;
+            --white: #f8fafc;
+            --gray: #94a3b8;
+            --border: #334155;
+            --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.2);
+            --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background-color: var(--light);
+            color: var(--dark);
+            line-height: 1.6;
+            transition: var(--transition);
+            overflow-x: hidden;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        /* Header */
+        header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: var(--white);
+            padding: 20px 0;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            transition: var(--transition);
+            backdrop-filter: blur(10px);
+        }
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .logo i {
+            font-size: 2rem;
+            color: var(--white);
+            background: rgba(255, 255, 255, 0.2);
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .logo h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            letter-spacing: -0.025em;
+        }
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .theme-toggle, .bookmark-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: var(--white);
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            transition: var(--transition);
+            backdrop-filter: blur(10px);
+        }
+        .theme-toggle:hover, .bookmark-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+        .bookmark-btn.active {
+            background: var(--warning);
+        }
+        /* Notification */
+        .notification {
+            position: fixed;
+            top: 100px;
+            right: 20px;
+            background: var(--white);
+            color: var(--dark);
+            padding: 16px 20px;
+            border-radius: 12px;
+            box-shadow: var(--shadow-lg);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transform: translateX(400px);
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            max-width: 350px;
+            border-left: 4px solid var(--primary);
+        }
+        .notification.show {
+            transform: translateX(0);
+        }
+        .notification i {
+            font-size: 1.4rem;
+        }
+        .notification.success {
+            border-left-color: var(--success);
+        }
+        .notification.error {
+            border-left-color: var(--danger);
+        }
+        .notification.info {
+            border-left-color: var(--info);
+        }
+        .notification.warning {
+            border-left-color: var(--warning);
+        }
+        .notification-close {
+            margin-left: auto;
+            cursor: pointer;
+            color: var(--gray);
+            font-size: 1.2rem;
+        }
+        /* Homepage */
+        .homepage {
+            text-align: center;
+            padding: 80px 20px;
+            animation: fadeIn 0.8s ease;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .homepage h2 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 24px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -0.025em;
+        }
+        .homepage p {
+            font-size: 1.25rem;
+            max-width: 700px;
+            margin: 0 auto 40px;
+            color: var(--gray);
+            line-height: 1.8;
+        }
+        .start-btn {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: var(--white);
+            border: none;
+            padding: 16px 36px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: var(--shadow);
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            letter-spacing: 0.025em;
+        }
+        .start-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-lg);
+        }
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 80px;
+        }
+        .feature-card {
+            background: var(--white);
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            border: 1px solid var(--border);
+            position: relative;
+            overflow: hidden;
+        }
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%);
+        }
+        .feature-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-lg);
+        }
+        .feature-card i {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .feature-card h3 {
+            margin-bottom: 16px;
+            color: var(--dark);
+            font-size: 1.25rem;
+            font-weight: 700;
+        }
+        .feature-card p {
+            color: var(--gray);
+            line-height: 1.6;
+        }
+        /* Quiz */
+        .quiz-container {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+        .quiz-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .quiz-timer {
+            background: var(--white);
+            padding: 12px 20px;
+            border-radius: 50px;
+            box-shadow: var(--shadow);
+            font-weight: 600;
+            color: var(--primary);
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .progress-container {
+            background: var(--white);
+            border-radius: 50px;
+            padding: 6px;
+            box-shadow: var(--shadow);
+            margin-bottom: 30px;
+            border: 1px solid var(--border);
+            overflow: hidden;
+        }
+        .progress-bar {
+            height: 16px;
+            background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%);
+            border-radius: 50px;
+            width: 0%;
+            transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        .progress-bar::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(
+                90deg,
+                rgba(255, 255, 255, 0) 0%,
+                rgba(255, 255, 255, 0.3) 50%,
+                rgba(255, 255, 255, 0) 100%
+            );
+            animation: shimmer 2s infinite;
+        }
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        .question-container {
+            background: var(--white);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: var(--shadow);
+            margin-bottom: 30px;
+            border: 1px solid var(--border);
+            animation: slideIn 0.5s ease;
+        }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .slide-image-container {
+            position: relative;
+            margin-bottom: 30px;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+        .slide-image {
+            width: 100%;
+            max-height: 450px;
+            object-fit: cover;
+            display: block;
+            transition: var(--transition);
+        }
+        .slide-image:hover {
+            transform: scale(1.02);
+        }
+        .zoom-controls {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            display: flex;
+            gap: 8px;
+        }
+        .zoom-btn {
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            color: var(--dark);
+        }
+        .zoom-btn:hover {
+            background: var(--white);
+            transform: scale(1.1);
+        }
+        .question-text {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 30px;
+            text-align: center;
+            color: var(--dark);
+            letter-spacing: -0.025em;
+        }
+        .input-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .answer-input {
+            width: 100%;
+            padding: 16px 20px;
+            font-size: 1.1rem;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            background: var(--light);
+            color: var(--dark);
+            transition: var(--transition);
+            font-weight: 500;
+        }
+        .answer-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+        .input-actions {
+            display: flex;
+            gap: 15px;
+        }
+        .submit-btn {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: var(--white);
+            border: none;
+            padding: 14px 28px;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            flex: 1;
+            letter-spacing: 0.025em;
+        }
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+        .submit-btn:disabled {
+            background: var(--gray);
+            cursor: not-allowed;
+            transform: none;
+        }
+        .hint-btn {
+            background: var(--warning);
+            color: var(--white);
+            border: none;
+            padding: 14px 20px;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .hint-btn:hover {
+            background: #d97706;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+        .hint-btn:disabled {
+            background: var(--gray);
+            cursor: not-allowed;
+            transform: none;
+        }
+        .feedback-container {
+            margin-top: 25px;
+            padding: 20px;
+            border-radius: 12px;
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+        .feedback-correct {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid var(--success);
+            color: var(--success);
+        }
+        .feedback-incorrect {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid var(--danger);
+            color: var(--danger);
+        }
+        .feedback-partial {
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid var(--warning);
+            color: var(--warning);
+        }
+        .similarity-meter {
+            margin-top: 15px;
+            background: var(--light);
+            border-radius: 12px;
+            padding: 12px;
+        }
+        .similarity-bar {
+            height: 10px;
+            background: var(--border);
+            border-radius: 50px;
+            overflow: hidden;
+            margin-top: 8px;
+        }
+        .similarity-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--danger) 0%, var(--warning) 50%, var(--success) 100%);
+            width: 0%;
+            transition: width 1s ease;
+        }
+        .explanation-container {
+            margin-top: 20px;
+            padding: 20px;
+            background: var(--light);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            display: none;
+        }
+        .explanation-container h4 {
+            margin-bottom: 12px;
+            color: var(--primary);
+            font-weight: 700;
+        }
+        .quiz-controls {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+            gap: 20px;
+        }
+        .quiz-btn {
+            background: var(--white);
+            color: var(--primary);
+            border: 2px solid var(--primary);
+            padding: 12px 24px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex: 1;
+            justify-content: center;
+        }
+        .quiz-btn:hover {
+            background: var(--primary);
+            color: var(--white);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+        .quiz-btn:disabled {
+            background: var(--gray);
+            color: var(--white);
+            border-color: var(--gray);
+            cursor: not-allowed;
+            transform: none;
+        }
+        /* Results */
+        .results-container {
+            display: none;
+            text-align: center;
+            animation: fadeIn 0.5s ease;
+        }
+        .results-card {
+            background: var(--white);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: var(--shadow-lg);
+            max-width: 800px;
+            margin: 0 auto;
+            border: 1px solid var(--border);
+        }
+        .results-header {
+            margin-bottom: 30px;
+        }
+        .results-header h2 {
+            font-size: 2.5rem;
+            color: var(--dark);
+            margin-bottom: 10px;
+            font-weight: 800;
+        }
+        .score-circle {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            background: conic-gradient(var(--primary) 0%, var(--secondary) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 30px auto;
+            position: relative;
+            animation: scaleIn 0.8s ease;
+        }
+        @keyframes scaleIn {
+            from { transform: scale(0); }
+            to { transform: scale(1); }
+        }
+        .score-circle::before {
+            content: '';
+            position: absolute;
+            width: 160px;
+            height: 160px;
+            border-radius: 50%;
+            background: var(--white);
+        }
+        .score-value {
+            position: relative;
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--primary);
+        }
+        .results-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+            margin: 40px 0;
+        }
+        .stat-item {
+            background: var(--light);
+            border-radius: 16px;
+            padding: 20px;
+            border: 1px solid var(--border);
+        }
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin-bottom: 5px;
+        }
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--gray);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .results-details {
+            text-align: left;
+            margin-top: 30px;
+            max-height: 350px;
+            overflow-y: auto;
+            background: var(--light);
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid var(--border);
+        }
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid var(--border);
+        }
+        .result-item:last-child {
+            border-bottom: none;
+        }
+        .result-status {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .result-status i {
+            font-size: 1.2rem;
+        }
+        .correct-icon {
+            color: var(--success);
+        }
+        .incorrect-icon {
+            color: var(--danger);
+        }
+        .partial-icon {
+            color: var(--warning);
+        }
+        .recommendations {
+            margin-top: 30px;
+            padding: 25px;
+            background: var(--light);
+            border-radius: 16px;
+            border: 1px solid var(--border);
+        }
+        .recommendations h3 {
+            margin-bottom: 15px;
+            color: var(--primary);
+            font-weight: 700;
+            font-size: 1.25rem;
+        }
+        .recommendations ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        .recommendations li {
+            margin-bottom: 12px;
+            padding-left: 30px;
+            position: relative;
+            line-height: 1.6;
+        }
+        .recommendations li::before {
+            content: '\f058';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            position: absolute;
+            left: 0;
+            color: var(--success);
+        }
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 40px;
+            flex-wrap: wrap;
+        }
+        .action-btn {
+            background: var(--white);
+            color: var(--primary);
+            border: 2px solid var(--primary);
+            padding: 14px 28px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .action-btn:hover {
+            background: var(--primary);
+            color: var(--white);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+        .action-btn.secondary {
+            background: var(--gray);
+            color: var(--white);
+            border-color: var(--gray);
+        }
+        .action-btn.secondary:hover {
+            background: var(--dark);
+            border-color: var(--dark);
+        }
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(5px);
+        }
+        .modal.show {
+            display: flex;
+        }
+        .modal-content {
+            background: var(--white);
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: var(--shadow-lg);
+            animation: slideUp 0.3s ease;
+        }
+        @keyframes slideUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border);
+        }
+        .modal-title {
+            font-size: 1.5rem;
+            color: var(--dark);
+            font-weight: 700;
+        }
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--gray);
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+        .modal-close:hover {
+            background: var(--light);
+            color: var(--dark);
+        }
+        .modal-body {
+            margin-bottom: 25px;
+        }
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            padding-top: 15px;
+            border-top: 1px solid var(--border);
+        }
+        .modal-btn {
+            background: var(--primary);
+            color: var(--white);
+            border: none;
+            padding: 12px 24px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+        .modal-btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+        .modal-btn.secondary {
+            background: var(--gray);
+        }
+        .modal-btn.secondary:hover {
+            background: var(--dark);
+        }
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 15px;
+            }
+            .homepage h2 {
+                font-size: 2.5rem;
+            }
+            .homepage p {
+                font-size: 1.1rem;
+            }
+            .features {
+                grid-template-columns: 1fr;
+            }
+            .quiz-controls {
+                flex-direction: column;
+            }
+            .action-buttons {
+                flex-direction: column;
+            }
+            .results-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .score-circle {
+                width: 150px;
+                height: 150px;
+            }
+            .score-circle::before {
+                width: 130px;
+                height: 130px;
+            }
+            .score-value {
+                font-size: 2.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Notification -->
+    <div id="notification" class="notification">
+        <i class="fas fa-info-circle"></i>
+        <span id="notification-text"></span>
+        <i class="fas fa-times notification-close"></i>
+    </div>
+
+    <!-- Header -->
+    <header id="header">
+        <div class="header-content">
+            <div class="logo">
+                <i class="fas fa-microscope"></i>
+                <h1>Pathology Quiz</h1>
+            </div>
+            <div class="header-controls">
+                <button class="bookmark-btn" id="global-bookmark-btn" title="Bookmarks">
+                    <i class="fas fa-bookmark"></i>
+                </button>
+                <button class="theme-toggle" id="theme-toggle">
+                    <i class="fas fa-moon"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Homepage -->
+        <section class="homepage" id="homepage">
+            <h2>Master Pathology</h2>
+            <p>Challenge yourself with our comprehensive pathology slide quiz. Test your knowledge, learn from detailed explanations, and track your progress as you become a pathology expert.</p>
+            <button class="start-btn" id="start-quiz">
+                <i class="fas fa-play"></i> Start Quiz
+            </button>
+            <div class="features">
+                <div class="feature-card">
+                    <i class="fas fa-brain"></i>
+                    <h3>Smart Scoring</h3>
+                    <p>Advanced algorithm that handles spelling variations and word order differences, giving credit for partially correct answers.</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-chart-line"></i>
+                    <h3>Detailed Feedback</h3>
+                    <p>Immediate feedback with similarity percentages to help you learn from mistakes and improve your diagnostic skills.</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-lightbulb"></i>
+                    <h3>Hints & Explanations</h3>
+                    <p>Get helpful hints and detailed explanations for each pathology slide to deepen your understanding.</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-mobile-alt"></i>
+                    <h3>Responsive Design</h3>
+                    <p>Works seamlessly on all devices. Study pathology wherever you are with our mobile-friendly interface.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Quiz -->
+        <section class="quiz-container" id="quiz-container">
+            <div class="quiz-header">
+                <div class="quiz-timer">
+                    <i class="fas fa-clock"></i> <span id="timer">00:00</span>
+                </div>
+                <div>
+                    Question <span id="current-question">1</span> of <span id="total-questions">49</span>
+                </div>
+            </div>
+            
+            <div class="progress-container">
+                <div class="progress-bar" id="progress-bar"></div>
+            </div>
+            
+            <div class="question-container">
+                <div class="slide-image-container">
+                    <img id="slide-image" class="slide-image" src="slides/1.jpg" alt="Pathology Slide">
+                    <div class="zoom-controls">
+                        <button class="zoom-btn" id="zoom-in-btn" title="Zoom In">
+                            <i class="fas fa-search-plus"></i>
+                        </button>
+                        <button class="zoom-btn" id="zoom-out-btn" title="Zoom Out">
+                            <i class="fas fa-search-minus"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="question-text" id="question-text">Identify this pathology slide:</div>
+                
+                <div class="input-container">
+                    <input type="text" id="answer-input" class="answer-input" placeholder="Type your answer here..." autocomplete="off">
+                    <div class="input-actions">
+                        <button id="hint-btn" class="hint-btn">
+                            <i class="fas fa-lightbulb"></i> Hint
+                        </button>
+                        <button id="submit-btn" class="submit-btn">
+                            <i class="fas fa-check"></i> Submit Answer
+                        </button>
+                    </div>
+                </div>
+                
+                <div id="feedback-container" class="feedback-container">
+                    <div id="feedback-text"></div>
+                    <div class="similarity-meter">
+                        <div>Answer Similarity: <span id="similarity-percentage">0%</span></div>
+                        <div class="similarity-bar">
+                            <div id="similarity-fill" class="similarity-fill"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="explanation-container" class="explanation-container">
+                    <h4>Explanation</h4>
+                    <p id="explanation-text"></p>
+                </div>
+            </div>
+            
+            <div class="quiz-controls">
+                <button class="quiz-btn" id="prev-btn" disabled>
+                    <i class="fas fa-arrow-left"></i> Previous
+                </button>
+                <button class="quiz-btn" id="next-btn" disabled>
+                    Next <i class="fas fa-arrow-right"></i>
+                </button>
+            </div>
+        </section>
+
+        <!-- Results -->
+        <section class="results-container" id="results-container">
+            <div class="results-card">
+                <div class="results-header">
+                    <h2>Quiz Results</h2>
+                    <p>Here's how you performed on the Pathology Quiz</p>
+                </div>
+                
+                <div class="score-circle">
+                    <div class="score-value" id="score-value">0%</div>
+                </div>
+                
+                <div class="results-stats">
+                    <div class="stat-item">
+                        <div class="stat-value" id="correct-count">0</div>
+                        <div class="stat-label">Correct</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="partial-count">0</div>
+                        <div class="stat-label">Partial</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="incorrect-count">0</div>
+                        <div class="stat-label">Incorrect</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="time-taken">00:00</div>
+                        <div class="stat-label">Time</div>
+                    </div>
+                </div>
+                
+                <div class="results-details" id="results-details">
+                    <!-- Results will be dynamically generated -->
+                </div>
+                
+                <div class="recommendations">
+                    <h3>Recommendations</h3>
+                    <ul id="recommendations-list">
+                        <!-- Recommendations will be dynamically generated -->
+                    </ul>
+                </div>
+                
+                <div class="action-buttons">
+                    <button class="action-btn secondary" id="review-answers">
+                        <i class="fas fa-redo"></i> Review Answers
+                    </button>
+                    <button class="action-btn secondary" id="bookmarks-results-btn">
+                        <i class="fas fa-bookmark"></i> View Bookmarks
+                    </button>
+                    <button class="action-btn" id="restart-quiz">
+                        <i class="fas fa-sync-alt"></i> Restart Quiz
+                    </button>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Modal -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="modal-title">Modal Title</h3>
+                <button class="modal-close" id="modal-close">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body" id="modal-body">
+                <!-- Modal content will be dynamically generated -->
+            </div>
+            <div class="modal-footer" id="modal-footer">
+                <!-- Modal buttons will be dynamically generated -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Pathology slides data with enhanced information
+        const slides = [
+            { 
+                id: 1, 
+                name: "Cloudy swelling of kidney", 
+                explanation: "Cloudy swelling is a reversible cell injury characterized by intracellular accumulation of water due to failure of the sodium-potassium pump. In the kidney, it appears as swollen, pale cells with granular cytoplasm.",
+                hint: "This is a reversible cellular injury common in many organs, characterized by intracellular water accumulation."
+            },
+            { 
+                id: 2, 
+                name: "Endometrial hyperplasia", 
+                explanation: "Endometrial hyperplasia is an abnormal proliferation of endometrial glands, resulting in an increased gland-to-stroma ratio. It's often caused by unopposed estrogen stimulation and can be a precursor to endometrial cancer.",
+                hint: "This condition involves excessive proliferation of endometrial tissue and is often related to hormonal imbalances."
+            },
+            { 
+                id: 3, 
+                name: "Myocardial Hypertrophy", 
+                explanation: "Myocardial hypertrophy is an adaptive response of the heart to increased workload, characterized by an increase in the size of cardiac myocytes. It can be physiological (as in athletes) or pathological (as in hypertension).",
+                hint: "This is an adaptive response of heart muscle cells to increased workload or stress."
+            },
+            { 
+                id: 4, 
+                name: "Atrophy", 
+                explanation: "Atrophy is a decrease in the size of cells, tissues, or organs, resulting from a decrease in cell size and/or number. It can be caused by disuse, denervation, loss of endocrine stimulation, inadequate nutrition, or ischemia.",
+                hint: "This condition involves a decrease in cell size or number due to various causes including disuse or inadequate nutrition."
+            },
+            { 
+                id: 5, 
+                name: "Fatty liver", 
+                explanation: "Fatty liver, or hepatic steatosis, is characterized by the accumulation of triglycerides in hepatocytes. It can be caused by alcohol abuse, obesity, diabetes, and other metabolic disorders.",
+                hint: "This condition involves abnormal accumulation of lipids in liver cells."
+            },
+            { 
+                id: 6, 
+                name: "Fatty change, heart", 
+                explanation: "Fatty change in the heart is characterized by the accumulation of lipid droplets in myocardial fibers. It's commonly seen in chronic anemia, severe malnutrition, and chronic alcoholism.",
+                hint: "This involves lipid accumulation in cardiac muscle cells, often seen in chronic conditions."
+            },
+            { 
+                id: 7, 
+                name: "Stromal Fatty Infiltration Of Heart", 
+                explanation: "Stromal fatty infiltration of the heart refers to the accumulation of adipose tissue in the cardiac stroma, between myocardial fibers. It's commonly seen in obesity and aging.",
+                hint: "This condition involves fat accumulation in the supporting tissue of the heart, not within the muscle cells themselves."
+            },
+            { 
+                id: 9, 
+                name: "Xanthomas", 
+                explanation: "Xanthomas are lipid-rich deposits in the skin and tendons, containing cholesterol-filled macrophages (foam cells). They are associated with hyperlipidemias, particularly familial hypercholesterolemia.",
+                hint: "These are yellowish deposits filled with lipid-laden macrophages, often associated with lipid metabolism disorders."
+            },
+            { 
+                id: 10, 
+                name: "Renal infarct", 
+                explanation: "A renal infarct is an area of ischemic necrosis in the kidney caused by occlusion of renal arterial branches. It appears as a pale, wedge-shaped area with the base at the cortical surface and apex pointing toward the medulla.",
+                hint: "This is a wedge-shaped area of necrosis in the kidney caused by interruption of blood supply."
+            },
+            { 
+                id: 11, 
+                name: "Splenic infarct", 
+                explanation: "Splenic infarction is caused by occlusion of splenic arterial branches, leading to ischemic necrosis. It appears as pale, wedge-shaped areas on the splenic surface, often with a hemorrhagic border.",
+                hint: "This involves wedge-shaped areas of necrosis in the spleen due to vascular occlusion."
+            },
+            { 
+                id: 12, 
+                name: "Brain infarct (liquefactive necrosis)", 
+                explanation: "Brain infarction results from occlusion of cerebral arteries, leading to liquefactive necrosis. The brain tissue undergoes softening and liquefaction due to the action of hydrolytic enzymes released from neutrophils and microglia.",
+                hint: "This type of necrosis in the brain results in softening and liquefaction of tissue after arterial occlusion."
+            },
+            { 
+                id: 13, 
+                name: "Caseous necrosis lung", 
+                explanation: "Caseous necrosis is a distinctive form of necrosis seen in tuberculosis, characterized by cheese-like, amorphous debris that is surrounded by a granulomatous inflammatory reaction.",
+                hint: "This cheese-like form of necrosis is characteristic of a specific granulomatous infection."
+            },
+            { 
+                id: 14, 
+                name: "Enzymatic fat necrosis", 
+                explanation: "Enzymatic fat necrosis occurs in acute pancreatitis when pancreatic enzymes are released into the surrounding tissue, causing digestion of fat cells. It appears as chalky white areas representing saponified fat.",
+                hint: "This type of fat necrosis occurs when pancreatic enzymes are released and digest surrounding fat tissue."
+            },
+            { 
+                id: 15, 
+                name: "CVC of lung (Chronic venous congestion of the lung)", 
+                explanation: "Chronic venous congestion of the lung is caused by left heart failure, leading to increased pulmonary venous pressure. It results in alveolar septal thickening, hemosiderin-laden macrophages, and pulmonary fibrosis.",
+                hint: "This condition results from impaired venous drainage from the lungs, often due to left heart failure."
+            },
+            { 
+                id: 16, 
+                name: "CVC of liver (Chronic venous congestion of the liver)", 
+                explanation: "Chronic venous congestion of the liver, also known as 'nutmeg liver,' is caused by right heart failure. It results in centrilobular congestion and necrosis, giving the liver a speckled appearance resembling a nutmeg.",
+                hint: "This liver condition gives a speckled appearance resembling a nutmeg and is associated with right heart failure."
+            },
+            { 
+                id: 17, 
+                name: "Dry gangrene", 
+                explanation: "Dry gangrene is a form of coagulative necrosis that occurs in extremities with arterial insufficiency. It appears as dry, shrunken, and dark tissue with a clear line of demarcation from viable tissue.",
+                hint: "This type of gangrene occurs in extremities with poor arterial supply and appears dry and shrunken."
+            },
+            { 
+                id: 18, 
+                name: "Brown atrophy of heart", 
+                explanation: "Brown atrophy of the heart is seen in aging and cachexia, characterized by accumulation of lipofuscin pigment in myocardial cells. The heart appears small and brown due to the combination of atrophy and lipofuscin deposition.",
+                hint: "This condition involves accumulation of a brown pigment in heart muscle cells, often seen in aging."
+            },
+            { 
+                id: 19, 
+                name: "Wet gangrene of intestine", 
+                explanation: "Wet gangrene of the intestine occurs when there is arterial and venous obstruction, leading to liquefactive necrosis with bacterial infection. It appears as dark, swollen, and foul-smelling tissue without clear demarcation.",
+                hint: "This type of gangrene involves both arterial and venous obstruction, leading to bacterial infection and liquefaction."
+            },
+            { 
+                id: 20, 
+                name: "Keloid", 
+                explanation: "A keloid is an abnormal proliferation of scar tissue that extends beyond the boundaries of the original wound. It's characterized by thick, collagenous hyalinized tissue and tends to recur after excision.",
+                hint: "This is an overgrowth of scar tissue that extends beyond the original wound boundaries."
+            },
+            { 
+                id: 21, 
+                name: "Perioral skin contracture", 
+                explanation: "Perioral skin contracture is a fibrous band that forms around the mouth, limiting opening. It's often a complication of burns, trauma, or inflammatory conditions affecting the perioral region.",
+                hint: "This condition involves fibrous tissue formation around the mouth that limits opening."
+            },
+            { 
+                id: 22, 
+                name: "Skin neck contracture", 
+                explanation: "Skin neck contracture is a fibrous band that forms in the neck region, limiting movement. It's commonly seen as a complication of burns, trauma, or radiation therapy.",
+                hint: "This involves fibrous tissue formation in the neck that restricts movement, often after burns or trauma."
+            },
+            { 
+                id: 23, 
+                name: "Carbuncle", 
+                explanation: "A carbuncle is a deep-seated infection of the skin and subcutaneous tissue involving multiple hair follicles. It's characterized by necrosis of the skin and suppuration, often with multiple draining sinuses.",
+                hint: "This is a deep skin infection involving multiple hair follicles with multiple draining points."
+            },
+            { 
+                id: 24, 
+                name: "Furuncle", 
+                explanation: "A furuncle, or boil, is a localized purulent infection of a hair follicle and surrounding tissue. It's characterized by a central core of necrotic tissue and pus formation.",
+                hint: "This is a localized infection of a hair follicle that forms a pus-filled nodule."
+            },
+            { 
+                id: 25, 
+                name: "Gum abscess", 
+                explanation: "A gum abscess is a localized collection of pus in the gingival tissues, usually resulting from bacterial infection. It's often associated with poor dental hygiene, dental caries, or periodontal disease.",
+                hint: "This is a localized collection of pus in the gum tissue, often related to dental problems."
+            },
+            { 
+                id: 26, 
+                name: "Preauricular abscess", 
+                explanation: "A preauricular abscess is a collection of pus in the tissues anterior to the ear. It can result from infections of the external ear, parotid gland, or adjacent structures.",
+                hint: "This is a pus-filled swelling located in front of the ear."
+            },
+            { 
+                id: 27, 
+                name: "Catarrhal inflammation", 
+                explanation: "Catarrhal inflammation is characterized by excessive secretion of mucus from mucous membranes. It's commonly seen in respiratory and gastrointestinal infections, resulting in a runny nose or increased mucus production.",
+                hint: "This type of inflammation involves excessive mucus production from mucous membranes."
+            },
+            { 
+                id: 28, 
+                name: "Leg cellulitis left side", 
+                explanation: "Cellulitis is a bacterial infection of the skin and subcutaneous tissues, characterized by spreading redness, warmth, swelling, and pain. It's commonly caused by Streptococcus or Staphylococcus species.",
+                hint: "This is a spreading bacterial infection of the skin and subcutaneous tissues."
+            },
+            { 
+                id: 29, 
+                name: "Periorbital cellulitis", 
+                explanation: "Periorbital cellulitis is an infection of the eyelid and surrounding skin anterior to the orbital septum. It's characterized by eyelid erythema, swelling, and warmth, but without proptosis or ophthalmoplegia.",
+                hint: "This is an infection of the eyelid and surrounding tissues, but not involving the orbit itself."
+            },
+            { 
+                id: 30, 
+                name: "Mucous patch (snail track ulcer)", 
+                explanation: "Mucous patches are flat, moist lesions seen in secondary syphilis. They are highly infectious and contain numerous spirochetes. When they occur in the genital area, they are sometimes called 'snail track ulcers' due to their appearance.",
+                hint: "These are moist, flat lesions seen in a specific stage of a sexually transmitted infection."
+            },
+            { 
+                id: 31, 
+                name: "Cervico-facial actinomycosis", 
+                explanation: "Cervico-facial actinomycosis is a chronic bacterial infection caused by Actinomyces israelii. It's characterized by swelling, abscess formation, and draining sinuses with sulfur granules. It's often called 'lumpy jaw.'",
+                hint: "This chronic bacterial infection of the face and neck is characterized by swelling and draining sinuses with sulfur granules."
+            },
+            { 
+                id: 32, 
+                name: "General skin rash", 
+                explanation: "General skin rash is a non-specific term for widespread skin inflammation. It can be caused by infections, autoimmune diseases, allergic reactions, medications, or systemic diseases. The appearance and distribution vary depending on the cause.",
+                hint: "This is a non-specific term for widespread skin inflammation with various potential causes."
+            },
+            { 
+                id: 33, 
+                name: "Mycetoma or Madura foot", 
+                explanation: "Mycetoma, also known as Madura foot, is a chronic granulomatous infection of the skin and subcutaneous tissues, often affecting the foot. It's characterized by tumefaction, draining sinuses, and granules that may be fungal or bacterial in origin.",
+                hint: "This chronic infection of the foot is characterized by swelling, draining sinuses, and granules."
+            },
+            { 
+                id: 34, 
+                name: "Leonine facies", 
+                explanation: "Leonine facies is a characteristic facial appearance seen in advanced lepromatous leprosy. It's characterized by thickening of the facial skin, loss of eyebrows, and nodular infiltration, giving the face a lion-like appearance.",
+                hint: "This lion-like facial appearance is seen in a specific chronic granulomatous disease."
+            },
+            { 
+                id: 35, 
+                name: "Genital chancre on glans of penis", 
+                explanation: "A genital chancre is the primary lesion of syphilis, appearing as a painless ulcer with a clean base and indurated margins. It's highly infectious and heals spontaneously after 3-6 weeks.",
+                hint: "This painless genital ulcer is the primary lesion of a specific sexually transmitted infection."
+            },
+            { 
+                id: 36, 
+                name: "Rhinoscleroma with saddle shape of nose", 
+                explanation: "Rhinoscleroma is a chronic granulomatous infection of the upper respiratory tract caused by Klebsiella rhinoscleromatis. The 'saddle nose' deformity results from destruction of the nasal septum and bridge.",
+                hint: "This rare chronic infection can cause a characteristic deformity of the nose."
+            },
+            { 
+                id: 37, 
+                name: "Condyloma acuminatum", 
+                explanation: "Condyloma acuminatum, or genital warts, is a sexually transmitted infection caused by human papillomavirus (HPV). It appears as exophytic, cauliflower-like lesions in the anogenital region.",
+                hint: "These cauliflower-like genital lesions are caused by a specific virus."
+            },
+            { 
+                id: 38, 
+                name: "Syphilitic rhagades", 
+                explanation: "Syphilitic rhagades are linear scars or fissures around the mouth or other orifices, seen in congenital syphilis. They result from previous inflammation and healing of the skin in these areas.",
+                hint: "These are linear scars around the mouth seen in a specific congenital infection."
+            },
+            { 
+                id: 39, 
+                name: "Hutchinson teeth", 
+                explanation: "Hutchinson teeth are a dental manifestation of congenital syphilis, characterized by notched, peg-shaped upper central incisors with a screwdriver appearance. They result from inflammation of the tooth bud during development.",
+                hint: "These characteristic notched incisors are a sign of a specific congenital infection."
+            },
+            { 
+                id: 40, 
+                name: "Condyloma latum", 
+                explanation: "Condyloma latum is a moist, flat, plaque-like lesion seen in secondary syphilis. It's highly infectious and contains numerous spirochetes. It's typically found in warm, moist areas such as the perineum and vulva.",
+                hint: "These moist, flat lesions are seen in a specific stage of a sexually transmitted infection."
+            },
+            { 
+                id: 41, 
+                name: "Dermoid cyst (mature teratoma)", 
+                explanation: "A dermoid cyst, or mature teratoma, is a benign tumor composed of tissues derived from all three germ cell layers. It commonly contains skin, hair, sebaceous glands, and sometimes teeth or neural tissue.",
+                hint: "This benign tumor contains elements from multiple germ cell layers, often including skin and hair."
+            },
+            { 
+                id: 42, 
+                name: "Tubercular ulcer of small intestine", 
+                explanation: "Tubercular ulcers of the small intestine are typically seen in the ileocecal region. They are transverse ulcers with undermined edges, resulting from caseous necrosis of Peyer's patches and lymphoid tissue.",
+                hint: "These intestinal ulcers have a characteristic transverse orientation and are caused by a specific granulomatous infection."
+            },
+            { 
+                id: 43, 
+                name: "T.B lung with apical large cavitation", 
+                explanation: "Tuberculosis of the lung with apical cavitation is a form of post-primary tuberculosis. The apical regions have high oxygen tension, which favors the growth of Mycobacterium tuberculosis, leading to caseation and cavity formation.",
+                hint: "This form of lung infection typically affects the upper lobes and can lead to cavity formation."
+            },
+            { 
+                id: 44, 
+                name: "TB orchitis", 
+                explanation: "Tuberculous orchitis is a rare manifestation of extrapulmonary tuberculosis. It's characterized by granulomatous inflammation of the testis, often with caseous necrosis and possible extension to the epididymis.",
+                hint: "This is a granulomatous infection of the testis caused by a specific mycobacterium."
+            },
+            { 
+                id: 45, 
+                name: "Lipoma", 
+                explanation: "A lipoma is a benign tumor composed of mature adipocytes. It's the most common soft tissue tumor, appearing as a soft, movable, subcutaneous mass. Lipomas are typically encapsulated and do not undergo malignant transformation.",
+                hint: "This is the most common benign soft tissue tumor, composed of mature fat cells."
+            },
+            { 
+                id: 46, 
+                name: "Skin tag papilloma", 
+                explanation: "Skin tag papillomas, or acrochordons, are benign skin growths composed of loose fibrous tissue. They appear as small, soft, pedunculated lesions, typically in areas of skin friction such as the neck, axillae, and groin.",
+                hint: "These are small, soft, pedunculated benign growths that typically occur in skin folds."
+            },
+            { 
+                id: 47, 
+                name: "Carcinoma of stomach (linitis plastica)", 
+                explanation: "Linitis plastica is a type of gastric carcinoma characterized by diffuse infiltration of the stomach wall by malignant cells, leading to thickening and rigidity. The stomach loses its distensibility and resembles a leather bottle.",
+                hint: "This type of stomach cancer causes diffuse thickening of the gastric wall, resulting in a rigid, leather-bottle appearance."
+            },
+            { 
+                id: 48, 
+                name: "Leiomyoma of uterus", 
+                explanation: "Leiomyoma of the uterus, or fibroid, is a benign smooth muscle tumor. It's the most common tumor of the female reproductive tract, appearing as well-circumscribed, firm, white masses in the uterine wall.",
+                hint: "This is the most common benign tumor of the uterus, composed of smooth muscle cells."
+            },
+            { 
+                id: 49, 
+                name: "Gastric carcinoma", 
+                explanation: "Gastric carcinoma is a malignant tumor of the stomach, most commonly adenocarcinoma. Risk factors include Helicobacter pylori infection, chronic atrophic gastritis, dietary factors, and genetic predisposition.",
+                hint: "This malignant tumor of the stomach has several risk factors including a specific bacterial infection."
+            }
+        ];
+
+        // Quiz state
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let partialCount = 0;
+        let incorrectCount = 0;
+        let userAnswers = [];
+        let timerInterval;
+        let seconds = 0;
+        let quizStarted = false;
+        let bookmarks = [];
+        let hintUsed = false;
+        let isZoomed = false;
+
+        // DOM elements
+        const header = document.getElementById('header');
+        const homepage = document.getElementById('homepage');
+        const quizContainer = document.getElementById('quiz-container');
+        const resultsContainer = document.getElementById('results-container');
+        const startQuizBtn = document.getElementById('start-quiz');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const slideImage = document.getElementById('slide-image');
+        const answerInput = document.getElementById('answer-input');
+        const submitBtn = document.getElementById('submit-btn');
+        const hintBtn = document.getElementById('hint-btn');
+        const feedbackContainer = document.getElementById('feedback-container');
+        const feedbackText = document.getElementById('feedback-text');
+        const similarityPercentage = document.getElementById('similarity-percentage');
+        const similarityFill = document.getElementById('similarity-fill');
+        const explanationContainer = document.getElementById('explanation-container');
+        const explanationText = document.getElementById('explanation-text');
+        const currentQuestionEl = document.getElementById('current-question');
+        const totalQuestionsEl = document.getElementById('total-questions');
+        const progressBar = document.getElementById('progress-bar');
+        const timerEl = document.getElementById('timer');
+        const scoreValueEl = document.getElementById('score-value');
+        const resultsDetailsEl = document.getElementById('results-details');
+        const recommendationsListEl = document.getElementById('recommendations-list');
+        const reviewAnswersBtn = document.getElementById('review-answers');
+        const bookmarksResultsBtn = document.getElementById('bookmarks-results-btn');
+        const restartQuizBtn = document.getElementById('restart-quiz');
+        const themeToggle = document.getElementById('theme-toggle');
+        const globalBookmarkBtn = document.getElementById('global-bookmark-btn');
+        const zoomInBtn = document.getElementById('zoom-in-btn');
+        const zoomOutBtn = document.getElementById('zoom-out-btn');
+        
+        // Results elements
+        const correctCountEl = document.getElementById('correct-count');
+        const partialCountEl = document.getElementById('partial-count');
+        const incorrectCountEl = document.getElementById('incorrect-count');
+        const timeTakenEl = document.getElementById('time-taken');
+        
+        // Modal elements
+        const modal = document.getElementById('modal');
+        const modalTitle = document.getElementById('modal-title');
+        const modalBody = document.getElementById('modal-body');
+        const modalFooter = document.getElementById('modal-footer');
+        const modalClose = document.getElementById('modal-close');
+        
+        // Notification elements
+        const notification = document.getElementById('notification');
+        const notificationText = document.getElementById('notification-text');
+        const notificationClose = document.querySelector('.notification-close');
+
+        // Initialize app
+        function initApp() {
+            // Load saved data
+            loadUserData();
+            
+            // Set up event listeners
+            setupEventListeners();
+            
+            // Check for saved theme preference
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark') {
+                document.body.setAttribute('data-theme', 'dark');
+                themeToggle.querySelector('i').className = 'fas fa-sun';
+            }
+        }
+
+        // Load user data from localStorage
+        function loadUserData() {
+            const savedBookmarks = localStorage.getItem('pathologyBookmarks');
+            if (savedBookmarks) {
+                bookmarks = JSON.parse(savedBookmarks);
+                updateBookmarkButton();
+            }
+        }
+
+        // Save user data to localStorage
+        function saveUserData() {
+            localStorage.setItem('pathologyBookmarks', JSON.stringify(bookmarks));
+        }
+
+        // Set up event listeners
+        function setupEventListeners() {
+            // Homepage button
+            startQuizBtn.addEventListener('click', startQuiz);
+            
+            // Quiz controls
+            submitBtn.addEventListener('click', submitAnswer);
+            answerInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter' && !submitBtn.disabled) {
+                    submitAnswer();
+                }
+            });
+            prevBtn.addEventListener('click', prevQuestion);
+            nextBtn.addEventListener('click', nextQuestion);
+            hintBtn.addEventListener('click', showHint);
+            zoomInBtn.addEventListener('click', zoomIn);
+            zoomOutBtn.addEventListener('click', zoomOut);
+            
+            // Results buttons
+            reviewAnswersBtn.addEventListener('click', reviewAnswers);
+            bookmarksResultsBtn.addEventListener('click', showBookmarks);
+            restartQuizBtn.addEventListener('click', restartQuiz);
+            
+            // Theme toggle
+            themeToggle.addEventListener('click', toggleTheme);
+            
+            // Bookmark button
+            globalBookmarkBtn.addEventListener('click', showBookmarks);
+            
+            // Modal
+            modalClose.addEventListener('click', closeModal);
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) closeModal();
+            });
+            
+            // Notification
+            notificationClose.addEventListener('click', hideNotification);
+            
+            // Keyboard shortcuts
+            document.addEventListener('keydown', handleKeyboardShortcuts);
+        }
+
+        // Handle keyboard shortcuts
+        function handleKeyboardShortcuts(e) {
+            // Only handle shortcuts when not in input fields
+            if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+            
+            switch(e.key) {
+                case 'Escape':
+                    if (modal.classList.contains('show')) {
+                        closeModal();
+                    } else if (isZoomed) {
+                        zoomOut();
+                    }
+                    break;
+                case 'h':
+                    if (quizContainer.style.display === 'block' && !hintBtn.disabled) {
+                        showHint();
+                    }
+                    break;
+                case 'b':
+                    if (quizContainer.style.display === 'block') {
+                        toggleBookmark();
+                    }
+                    break;
+                case 'ArrowLeft':
+                    if (quizContainer.style.display === 'block' && !prevBtn.disabled) {
+                        prevQuestion();
+                    }
+                    break;
+                case 'ArrowRight':
+                    if (quizContainer.style.display === 'block' && !nextBtn.disabled) {
+                        nextQuestion();
+                    }
+                    break;
+            }
+        }
+
+        // Start quiz
+        function startQuiz() {
+            // Shuffle slides
+            const shuffledSlides = [...slides];
+            for (let i = shuffledSlides.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffledSlides[i], shuffledSlides[j]] = [shuffledSlides[j], shuffledSlides[i]];
+            }
+            
+            currentQuestionIndex = 0;
+            score = 0;
+            partialCount = 0;
+            incorrectCount = 0;
+            userAnswers = [];
+            seconds = 0;
+            quizStarted = true;
+            hintUsed = false;
+            
+            // Update UI
+            totalQuestionsEl.textContent = shuffledSlides.length;
+            loadQuestion(shuffledSlides);
+            startTimer();
+            
+            // Show quiz container
+            homepage.style.display = 'none';
+            quizContainer.style.display = 'block';
+            resultsContainer.style.display = 'none';
+            header.style.display = 'none';
+        }
+
+        // Start timer
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                seconds++;
+                const mins = Math.floor(seconds / 60);
+                const secs = seconds % 60;
+                timerEl.textContent = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+            }, 1000);
+        }
+
+        // Stop timer
+        function stopTimer() {
+            clearInterval(timerInterval);
+        }
+
+        // Load current question
+        function loadQuestion(shuffledSlides) {
+            const currentSlide = shuffledSlides[currentQuestionIndex];
+            slideImage.src = `slides/${currentSlide.id}.jpg`;
+            currentQuestionEl.textContent = currentQuestionIndex + 1;
+            
+            // Update progress bar
+            const progress = ((currentQuestionIndex + 1) / shuffledSlides.length) * 100;
+            progressBar.style.width = `${progress}%`;
+            
+            // Reset input and feedback
+            answerInput.value = '';
+            answerInput.disabled = false;
+            submitBtn.disabled = false;
+            hintBtn.disabled = false;
+            feedbackContainer.style.display = 'none';
+            explanationContainer.style.display = 'none';
+            nextBtn.disabled = true;
+            hintUsed = false;
+            
+            // Reset zoom
+            if (isZoomed) {
+                zoomOut();
+            }
+            
+            // Focus on input field
+            setTimeout(() => answerInput.focus(), 300);
+            
+            // Update navigation buttons
+            prevBtn.disabled = currentQuestionIndex === 0;
+            
+            // Store shuffled slides for later use
+            if (!window.currentShuffledSlides) {
+                window.currentShuffledSlides = shuffledSlides;
+            }
+        }
+
+        // Handle answer submission
+        function submitAnswer() {
+            const userAnswer = answerInput.value.trim();
+            if (!userAnswer) return;
+            
+            const currentSlide = window.currentShuffledSlides[currentQuestionIndex];
+            const correctAnswer = currentSlide.name;
+            
+            // Calculate similarity
+            const similarity = calculateSimilarity(userAnswer.toLowerCase(), correctAnswer.toLowerCase());
+            
+            // Determine if answer is correct, partially correct, or incorrect
+            let isCorrect = false;
+            let isPartial = false;
+            
+            if (similarity >= 0.8) {
+                isCorrect = true;
+            } else if (similarity >= 0.5) {
+                isPartial = true;
+            }
+            
+            // Store user answer
+            userAnswers.push({
+                slideId: currentSlide.id,
+                slideName: correctAnswer,
+                userAnswer: userAnswer,
+                correctAnswer: correctAnswer,
+                similarity: similarity,
+                isCorrect: isCorrect,
+                isPartial: isPartial,
+                hintUsed: hintUsed
+            });
+            
+            // Update score
+            if (isCorrect) {
+                score++;
+            } else if (isPartial) {
+                partialCount++;
+            } else {
+                incorrectCount++;
+            }
+            
+            // Show feedback
+            showFeedback(isCorrect, isPartial, similarity, correctAnswer);
+            
+            // Show explanation
+            showExplanation(currentSlide.explanation);
+            
+            // Disable input and submit button
+            answerInput.disabled = true;
+            submitBtn.disabled = true;
+            hintBtn.disabled = true;
+            
+            // Enable next button
+            nextBtn.disabled = false;
+        }
+
+        // Show feedback
+        function showFeedback(isCorrect, isPartial, similarity, correctAnswer) {
+            feedbackContainer.style.display = 'block';
+            
+            if (isCorrect) {
+                feedbackContainer.className = 'feedback-container feedback-correct';
+                feedbackText.innerHTML = `<strong>Correct!</strong> Well done!`;
+            } else if (isPartial) {
+                feedbackContainer.className = 'feedback-container feedback-partial';
+                feedbackText.innerHTML = `<strong>Partially correct.</strong> The correct answer is: <strong>${correctAnswer}</strong>`;
+            } else {
+                feedbackContainer.className = 'feedback-container feedback-incorrect';
+                feedbackText.innerHTML = `<strong>Not quite right.</strong> The correct answer is: <strong>${correctAnswer}</strong>`;
+            }
+            
+            // Update similarity meter
+            const percentage = Math.round(similarity * 100);
+            similarityPercentage.textContent = `${percentage}%`;
+            
+            // Animate similarity bar
+            setTimeout(() => {
+                similarityFill.style.width = `${percentage}%`;
+            }, 100);
+        }
+
+        // Show explanation
+        function showExplanation(explanation) {
+            explanationText.textContent = explanation;
+            explanationContainer.style.display = 'block';
+        }
+
+        // Show hint
+        function showHint() {
+            const currentSlide = window.currentShuffledSlides[currentQuestionIndex];
+            hintUsed = true;
+            
+            // Disable hint button
+            hintBtn.disabled = true;
+            
+            // Show notification with hint
+            showNotification('Hint', currentSlide.hint, 'info');
+        }
+
+        // Toggle bookmark
+        function toggleBookmark() {
+            const currentSlide = window.currentShuffledSlides[currentQuestionIndex];
+            const bookmarkIndex = bookmarks.findIndex(b => b.id === currentSlide.id);
+            
+            if (bookmarkIndex === -1) {
+                // Add bookmark
+                bookmarks.push({
+                    id: currentSlide.id,
+                    name: currentSlide.name,
+                    date: new Date().toISOString()
+                });
+                
+                showNotification('Bookmarked', 'Slide added to your bookmarks', 'success');
+            } else {
+                // Remove bookmark
+                bookmarks.splice(bookmarkIndex, 1);
+                
+                showNotification('Bookmark Removed', 'Slide removed from your bookmarks', 'info');
+            }
+            
+            // Update bookmark button
+            updateBookmarkButton();
+            
+            // Save bookmarks
+            saveUserData();
+        }
+
+        // Update bookmark button
+        function updateBookmarkButton() {
+            const currentSlide = window.currentShuffledSlides && window.currentShuffledSlides[currentQuestionIndex];
+            if (currentSlide) {
+                const isBookmarked = bookmarks.some(b => b.id === currentSlide.id);
+                if (isBookmarked) {
+                    globalBookmarkBtn.classList.add('active');
+                } else {
+                    globalBookmarkBtn.classList.remove('active');
+                }
+            }
+        }
+
+        // Zoom in
+        function zoomIn() {
+            slideImage.style.maxHeight = 'none';
+            slideImage.style.maxWidth = 'none';
+            slideImage.style.cursor = 'zoom-out';
+            isZoomed = true;
+        }
+
+        // Zoom out
+        function zoomOut() {
+            slideImage.style.maxHeight = '450px';
+            slideImage.style.maxWidth = '100%';
+            slideImage.style.cursor = 'pointer';
+            isZoomed = false;
+        }
+
+        // Navigate to next question
+        function nextQuestion() {
+            currentQuestionIndex++;
+            
+            if (currentQuestionIndex < window.currentShuffledSlides.length) {
+                loadQuestion(window.currentShuffledSlides);
+            } else {
+                showResults();
+            }
+        }
+
+        // Navigate to previous question
+        function prevQuestion() {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                loadQuestion(window.currentShuffledSlides);
+            }
+        }
+
+        // Calculate similarity between two strings
+        function calculateSimilarity(str1, str2) {
+            // Remove special characters and extra spaces
+            const cleanStr1 = str1.replace(/[^\w\s]/gi, '').replace(/\s+/g, ' ').trim();
+            const cleanStr2 = str2.replace(/[^\w\s]/gi, '').replace(/\s+/g, ' ').trim();
+            
+            // Split into words
+            const words1 = cleanStr1.split(' ');
+            const words2 = cleanStr2.split(' ');
+            
+            // Check if all words from one string exist in the other (regardless of order)
+            const allWords1In2 = words1.every(word => words2.includes(word));
+            const allWords2In1 = words2.every(word => words1.includes(word));
+            
+            if (allWords1In2 && allWords2In1) {
+                return 0.95; // Very high similarity if words match but order is different
+            }
+            
+            // Calculate Levenshtein distance for overall similarity
+            const longer = cleanStr1.length > cleanStr2.length ? cleanStr1 : cleanStr2;
+            const shorter = cleanStr1.length > cleanStr2.length ? cleanStr2 : cleanStr1;
+            
+            if (longer.length === 0) return 1.0;
+            
+            const editDistance = getEditDistance(longer, shorter);
+            return (longer.length - editDistance) / longer.length;
+        }
+
+        // Calculate Levenshtein distance
+        function getEditDistance(str1, str2) {
+            const matrix = [];
+            
+            for (let i = 0; i <= str2.length; i++) {
+                matrix[i] = [i];
+            }
+            
+            for (let j = 0; j <= str1.length; j++) {
+                matrix[0][j] = j;
+            }
+            
+            for (let i = 1; i <= str2.length; i++) {
+                for (let j = 1; j <= str1.length; j++) {
+                    if (str2.charAt(i - 1) === str1.charAt(j - 1)) {
+                        matrix[i][j] = matrix[i - 1][j - 1];
+                    } else {
+                        matrix[i][j] = Math.min(
+                            matrix[i - 1][j - 1] + 1,
+                            matrix[i][j - 1] + 1,
+                            matrix[i - 1][j] + 1
+                        );
+                    }
+                }
+            }
+            
+            return matrix[str2.length][str1.length];
+        }
+
+        // Show results
+        function showResults() {
+            stopTimer();
+            
+            // Calculate final score
+            const finalScore = Math.round((score / window.currentShuffledSlides.length) * 100);
+            scoreValueEl.textContent = `${finalScore}%`;
+            
+            // Update stats
+            correctCountEl.textContent = score;
+            partialCountEl.textContent = partialCount;
+            incorrectCountEl.textContent = incorrectCount;
+            
+            const mins = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            timeTakenEl.textContent = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+            
+            // Generate results details
+            resultsDetailsEl.innerHTML = '';
+            userAnswers.forEach((answer, index) => {
+                const resultItem = document.createElement('div');
+                resultItem.className = 'result-item';
+                
+                let statusIcon = '';
+                if (answer.isCorrect) {
+                    statusIcon = '<i class="fas fa-check-circle correct-icon"></i>';
+                } else if (answer.isPartial) {
+                    statusIcon = '<i class="fas fa-exclamation-circle partial-icon"></i>';
+                } else {
+                    statusIcon = '<i class="fas fa-times-circle incorrect-icon"></i>';
+                }
+                
+                resultItem.innerHTML = `
+                    <div>
+                        <strong>Slide ${index + 1}:</strong> ${answer.slideName}
+                    </div>
+                    <div class="result-status">
+                        ${statusIcon}
+                        <span>${Math.round(answer.similarity * 100)}% match</span>
+                    </div>
+                `;
+                
+                resultsDetailsEl.appendChild(resultItem);
+            });
+            
+            // Generate recommendations
+            recommendationsListEl.innerHTML = '';
+            if (finalScore < 60) {
+                recommendationsListEl.innerHTML = `
+                    <li>Review basic pathology concepts and terminology</li>
+                    <li>Focus on common conditions like necrosis and inflammation</li>
+                    <li>Practice identifying different types of tissue changes</li>
+                `;
+            } else if (finalScore < 80) {
+                recommendationsListEl.innerHTML = `
+                    <li>Study less common pathologies and their features</li>
+                    <li>Pay attention to subtle differences between similar conditions</li>
+                    <li>Review specialized terminology and naming conventions</li>
+                `;
+            } else {
+                recommendationsListEl.innerHTML = `
+                    <li>Excellent work! Consider advanced pathology topics</li>
+                    <li>Explore rare conditions and complex cases</li>
+                    <li>Share your knowledge with peers and mentor others</li>
+                `;
+            }
+            
+            // Show results container
+            homepage.style.display = 'none';
+            quizContainer.style.display = 'none';
+            resultsContainer.style.display = 'block';
+            header.style.display = 'none';
+        }
+
+        // Review answers
+        function reviewAnswers() {
+            currentQuestionIndex = 0;
+            homepage.style.display = 'none';
+            resultsContainer.style.display = 'none';
+            quizContainer.style.display = 'block';
+            header.style.display = 'none';
+            loadQuestion(window.currentShuffledSlides);
+        }
+
+        // Show bookmarks
+        function showBookmarks() {
+            if (bookmarks.length === 0) {
+                showNotification('No Bookmarks', 'You haven\'t bookmarked any slides yet', 'info');
+                return;
+            }
+            
+            // Create bookmarks list
+            let bookmarksHTML = '<div style="max-height: 400px; overflow-y: auto;">';
+            bookmarks.forEach(bookmark => {
+                const date = new Date(bookmark.date);
+                const formattedDate = date.toLocaleDateString();
+                
+                bookmarksHTML += `
+                    <div style="padding: 20px; border-bottom: 1px solid var(--border); border-radius: 12px; margin-bottom: 15px; background: var(--light);">
+                        <div style="font-weight: 700; margin-bottom: 8px; font-size: 1.1rem;">${bookmark.name}</div>
+                        <div style="font-size: 0.9rem; color: var(--gray); margin-bottom: 15px;">Added: ${formattedDate}</div>
+                        <div style="display: flex; gap: 10px;">
+                            <button class="modal-btn" onclick="viewBookmark(${bookmark.id})">View</button>
+                            <button class="modal-btn secondary" onclick="removeBookmark(${bookmark.id})">Remove</button>
+                        </div>
+                    </div>
+                `;
+            });
+            bookmarksHTML += '</div>';
+            
+            showModal('Your Bookmarks', bookmarksHTML, [
+                { text: 'Close', action: closeModal }
+            ]);
+        }
+
+        // View bookmark
+        function viewBookmark(id) {
+            closeModal();
+            
+            // Find the bookmarked slide
+            const bookmarkedSlide = slides.find(slide => slide.id === id);
+            if (!bookmarkedSlide) return;
+            
+            // Create a custom quiz with just this slide
+            window.currentShuffledSlides = [bookmarkedSlide];
+            currentQuestionIndex = 0;
+            score = 0;
+            partialCount = 0;
+            incorrectCount = 0;
+            userAnswers = [];
+            seconds = 0;
+            quizStarted = true;
+            hintUsed = false;
+            
+            // Update UI
+            totalQuestionsEl.textContent = 1;
+            loadQuestion(window.currentShuffledSlides);
+            startTimer();
+            
+            // Show quiz container
+            homepage.style.display = 'none';
+            resultsContainer.style.display = 'none';
+            quizContainer.style.display = 'block';
+            header.style.display = 'none';
+        }
+
+        // Remove bookmark
+        function removeBookmark(id) {
+            const index = bookmarks.findIndex(b => b.id === id);
+            if (index !== -1) {
+                bookmarks.splice(index, 1);
+                saveUserData();
+                showBookmarks(); // Refresh the bookmarks modal
+                updateBookmarkButton();
+                showNotification('Bookmark Removed', 'Slide removed from your bookmarks', 'info');
+            }
+        }
+
+        // Restart quiz
+        function restartQuiz() {
+            // Clear current shuffled slides
+            window.currentShuffledSlides = null;
+            
+            // Show homepage
+            homepage.style.display = 'block';
+            quizContainer.style.display = 'none';
+            resultsContainer.style.display = 'none';
+            header.style.display = 'block';
+            
+            // Reset timer
+            stopTimer();
+            timerEl.textContent = '00:00';
+        }
+
+        // Toggle theme
+        function toggleTheme() {
+            const body = document.body;
+            const themeIcon = themeToggle.querySelector('i');
+            
+            if (body.getAttribute('data-theme') === 'dark') {
+                body.removeAttribute('data-theme');
+                themeIcon.className = 'fas fa-moon';
+                localStorage.setItem('theme', 'light');
+            } else {
+                body.setAttribute('data-theme', 'dark');
+                themeIcon.className = 'fas fa-sun';
+                localStorage.setItem('theme', 'dark');
+            }
+        }
+
+        // Show notification
+        function showNotification(title, message, type = 'info') {
+            notificationText.textContent = message;
+            notification.className = 'notification show';
+            
+            if (type === 'success') {
+                notification.classList.add('success');
+                notification.querySelector('i').className = 'fas fa-check-circle';
+            } else if (type === 'error') {
+                notification.classList.add('error');
+                notification.querySelector('i').className = 'fas fa-exclamation-circle';
+            } else if (type === 'warning') {
+                notification.classList.add('warning');
+                notification.querySelector('i').className = 'fas fa-exclamation-triangle';
+            } else {
+                notification.querySelector('i').className = 'fas fa-info-circle';
+            }
+            
+            // Auto-hide after 3 seconds
+            setTimeout(() => {
+                hideNotification();
+            }, 3000);
+        }
+
+        // Hide notification
+        function hideNotification() {
+            notification.classList.remove('show');
+        }
+
+        // Show modal
+        function showModal(title, content, buttons = []) {
+            modalTitle.textContent = title;
+            modalBody.innerHTML = content;
+            
+            modalFooter.innerHTML = '';
+            buttons.forEach(button => {
+                const btn = document.createElement('button');
+                btn.className = `modal-btn ${button.secondary ? 'secondary' : ''}`;
+                btn.textContent = button.text;
+                btn.addEventListener('click', button.action);
+                modalFooter.appendChild(btn);
+            });
+            
+            modal.classList.add('show');
+        }
+
+        // Close modal
+        function closeModal() {
+            modal.classList.remove('show');
+        }
+
+        // Initialize app on DOM load
+        document.addEventListener('DOMContentLoaded', initApp);
+    </script>
+</body>
+</html>
